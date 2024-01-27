@@ -1,0 +1,75 @@
+.tarjetas3{
+    display: flex;
+    
+    
+  }
+  .card3 {
+    width: 60%;
+    margin: 10px auto;
+    justify-content: center;
+    display: flex;
+    border: 1.5px solid rgb(221, 221, 221);
+    flex-direction: row;/* Alinea los elementos verticalmente */
+    text-align: left;
+    background-color: #f7f7f7;
+    box-shadow: 2px 2px 5px 0px  rgba(124, 124, 124, 0.742);
+  
+  }
+  
+  .card3 img {
+    display: flex;
+    justify-content: center;
+    width: 180px;  /* Asegura que la imagen ocupe el ancho completo del contenedor */
+    margin: 5px 0 5px 5px;/* Espaciado inferior entre la imagen y el texto */
+  }
+  .text{
+    display: flex;
+    align-items: center;
+    margin: 3%;
+  }
+  .button {
+    display: inline-block;
+    padding: 10px 40px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    color: #ffffff;
+    background-color: #085EF8;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Cambio de estilo al pasar el ratón sobre el botón */
+  .button:hover {
+    background-color: #fdfeff;
+    color: #090909;
+  }
+  
+  .tarjetas4{
+    display: flex;
+    
+    
+  }
+  .card4{
+    width: 80%;
+    margin: 15px auto;
+    justify-content: center;
+    display: flex;
+    margin-right: 10%;
+    border: 20% solid rgb(221, 221, 221);
+    flex-direction: row;/* Alinea los elementos verticalmente */
+    text-align: left;
+    background-color: #f7f7f7;
+    box-shadow: 2px 2px 5px 0px  rgba(124, 124, 124, 0.742);
+  
+  }
+  
+  .card4 img {
+    display: flex;
+    justify-content: center;
+    height: 400px;
+    width: 600px;  /* Asegura que la imagen ocupe el ancho completo del contenedor */
+    margin: 5px 5 5px 10px;/* Espaciado inferior entre la imagen y el texto */
+  }

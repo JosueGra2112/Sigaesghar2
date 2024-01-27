@@ -1,0 +1,53 @@
+/* Añade estos estilos a tu archivo CSS correspondiente */
+
+/* Contenedor principal del buscador */
+.search-container {
+    margin: 20px;
+  }
+  
+  /* Estilos para el combo box */
+  select {
+    padding: 8px;
+    margin-right: 10px;
+  }
+  
+  /* Estilos para el campo de texto */
+  input[type="text"] {
+    padding: 8px;
+    margin-right: 10px;
+  }
+  
+  /* Estilos para el botón de búsqueda */
+  button {
+    padding: 10px;
+    background-color: #007bff; /* Azul */
+    color: #fff; /* Texto blanco */
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Estilos para la tabla */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #227cac;
+    color: white;
+  }
+  
+  
+  /* Estilos para el encabezado */
+  h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  

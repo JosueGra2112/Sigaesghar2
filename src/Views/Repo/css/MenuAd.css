@@ -1,0 +1,31 @@
+/* src/Views/MenuInicio.css */
+
+.menu-inicio-container {
+    background-color: #555; /* Gris oscuro */
+    padding: 10px;
+  }
+  
+  .menu-inicio-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .menu-inicio-list li {
+    display: inline;
+  }
+  
+  .menu-inicio-list a {
+    text-decoration: none;
+    color: #fff; /* Texto blanco */
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px;
+    transition: color 0.3s ease; /* Efecto de transición de color */
+  }
+  
+  .menu-inicio-list a:hover {
+    color: #f00; /* Cambia el color al pasar el mouse (puedes ajustar el color a tu gusto) */
+  }
+  

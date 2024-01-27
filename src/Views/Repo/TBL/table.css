@@ -1,0 +1,36 @@
+/* Agrega este estilo en un nuevo archivo CSS o en tu archivo existente */
+
+/* Estilo general de la tabla */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Estilo del encabezado de la tabla */
+  thead {
+    background-color: #f2f2f2;
+  }
+  
+  th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  /* Estilo de las filas impares */
+  tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Estilo al pasar el ratón sobre las filas */
+  tbody tr:hover {
+    background-color: #e6e6e6;
+  }
+  
+  /* Estilo para el texto del encabezado */
+  th {
+    background-color: #227cac;
+    color: white;
+  }
+  

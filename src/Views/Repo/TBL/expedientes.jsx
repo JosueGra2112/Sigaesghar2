@@ -9,7 +9,6 @@ const Modal = ({ isOpen, onClose, onSubmit }) => {
   const [grupo, setGrupo] = useState('');
   const [exp, setExp] = useState('');
 
-
   const Grado = ['1', '2', '3'];
   const Grupo = ['A', 'B', 'C','D','E','F','G','H','I','J','K'];
   const Exp = ['BOLETA', 'CERTIFICADO', 'CONSTANCIA'];
@@ -158,9 +157,11 @@ const [advancedSearchData, setAdvancedSearchData] = useState({
         type="text"
         placeholder="Término de búsqueda..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => { 
+          setSearchTerm(e.target.value);
+          handleSearch(); // Realizar búsqueda automáticamente al escribir
+        }}
       />
-      <button onClick={handleSearch}>Buscar</button>
       {/* Botón para abrir la búsqueda avanzada */}
       <br />
       <br />

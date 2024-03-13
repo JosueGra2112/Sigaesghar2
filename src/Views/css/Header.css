@@ -1,12 +1,17 @@
 /* Header.css */
 
 .header {
-  background-color: #2961d1;
-  padding: 8px;
-  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #0088ff;
+  padding: 1px;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 .logo-container {
@@ -20,17 +25,11 @@
 }
 
 .nav-links {
-  display: flex;
+  
   white-space: nowrap;
-  background-color: #2961d1;
+  
 }
 
-.nav-links ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
 
 .nav-link {
   text-decoration: none;
@@ -40,20 +39,7 @@
   margin-right: 20px;
 }
 
-/* Media query para cambiar el diseño cuando la pantalla es más pequeña */
-@media screen and (max-width: 600px) {
-  .nav-links ul {
-    flex-direction: column;
-    align-items: flex-end;
-  }
-
-  .nav-link {
-    cursor: pointer;
-    margin-bottom: 10px;
-    margin-right: 0;
-  }
-
-  .header:hover .nav-links {
-    display: flex;
-  }
+/* Añade un margen superior al cuerpo de la página para compensar el header fijo */
+body {
+  margin-top: 120px; /* Ajusta este valor según el tamaño del header */
 }

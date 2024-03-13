@@ -1,6 +1,8 @@
-// src/App.jsx
+// App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { Helmet } from 'react-helmet';
 import Inicio from './Views/Inicio';
 import Header from './Views/Header';
 import Footer from './Views/Footer';
@@ -14,53 +16,70 @@ import AcercaDe from './Views/AcercaDe';
 import Sesion from './Views/sesion';
 import SesionAd from './Views/sesionAd';
 import TableExp from './Views/TablaExp';
-import MenuAd from './Views/Repo/MenuAd'; // Añade esta línea
+import MenuAd from './Views/Repo/MenuAd';
 import Expedientes from './Views/Repo/TBL/expedientes';
 import ErrorHandler from './Views/ErrorHandler';
-import Breadcrumbs from './Views/Breadcrumbs'; // Agrega esta línea
-
+import PageTransition from './Views/PageTransition'; // Importa el componente de transición
+import Rest from './Views/ResetPasswordForm';
 import IMG404 from './IMG/404.png';
 
 const NotFound = () => (
   <div>
     <center>
-    <Header />
+      <Header />
       <h2>¡Ooops!</h2>
       <h1>¡Error 404!</h1>
       <h3>La página que estás buscando no se encuentra en el servidor.</h3>
-      {<img src={IMG404} alt="Error 404" style={{ maxWidth: '100%', height: 'auto' }} />}
+      <img src={IMG404} alt="Error 404" style={{ maxWidth: '100%', height: 'auto' }} />
     </center>
   </div>
 );
 
 const App = () => {
+  console.log("CSP activo");
+
   return (
     <body>
       <Router>
-      <ErrorHandler>
-      <Breadcrumbs />
-      <Routes>
-          <Route path="/" element={<Inicio />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Registro" element={<Registro />} />
-          <Route path="/Restauracion" element={<Restauracion />} />
-          <Route path="/Bitacoras" element={<Bitacoras />} />
-          <Route path="/Boletin" element={<Boletin />} />
-          <Route path="/Calendario" element={<Calendario />} />
-          <Route path="/AcercaDe" element={<AcercaDe />} />
-          <Route path="/sesion" element={<Sesion />} />
-          <Route path="/sesionAd" element={<SesionAd />} />
-          <Route path="/TablaExp" element={<TableExp />} />
-          <Route path="/MenuAd" element={<MenuAd />} /> 
-          <Route path="/expedientes" element={<Expedientes />} />
-    
+        <Helmet>
+        
+        <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self'; 
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com; 
+    style-src 'self' 'unsafe-inline'; 
+    img-src 'self' https://www.google.com https://www.gstatic.com data:;
+    font-src 'self'; 
+    connect-src 'self' https://sigaemail.host8b.me/ https://sigaemail.host8b.me/correo.php http://localhost/WebServices/registro.php http://localhost/WebServices/preguntas.php http://localhost/WebServices/logeo.php http://localhost/WebServices/VerificarRespuestaSecreta.php http://localhost/WebServices/ActualizarContrasena.php http://localhost/WebServices/correo.php;
 
-          
-          {/* Ruta para manejar errores 404 */}
-          <Route path="404" element={<NotFound />} />
-          <Route path="*" element={<Navigate to="/404" />} />
-        </Routes>
-        <Footer />
+    frame-src 'self' https://www.google.com;" />
+
+
+
+        </Helmet>
+        <ErrorHandler>
+        <TransitionGroup>
+        <CSSTransition key={window.location.key} classNames="fade" timeout={300}>
+          <Routes>
+            <Route path="/" element={<PageTransition><Inicio /></PageTransition>} />
+            <Route path="/Login" element={<PageTransition><Login /></PageTransition>} />
+            <Route path="/Registro" element={<PageTransition><Registro /></PageTransition>} />
+            <Route path="/Restauracion" element={<PageTransition><Restauracion /></PageTransition>} />
+            <Route path="/Bitacoras" element={<PageTransition><Bitacoras /></PageTransition>} />
+            <Route path="/Boletin" element={<PageTransition><Boletin /></PageTransition>} />
+            <Route path="/Calendario" element={<PageTransition><Calendario /></PageTransition>} />
+            <Route path="/AcercaDe" element={<PageTransition><AcercaDe /></PageTransition>} />
+            <Route path="/sesion" element={<PageTransition><Sesion /></PageTransition>} />
+            <Route path="/sesionAd" element={<PageTransition><SesionAd /></PageTransition>} />
+            <Route path="/TablaExp" element={<PageTransition><TableExp /></PageTransition>} />
+            <Route path="/Rest" element={<PageTransition><Rest /></PageTransition>} />
+            <Route path="/MenuAd" element={<PageTransition><MenuAd /></PageTransition>} /> 
+            <Route path="/expedientes" element={<PageTransition><Expedientes /></PageTransition>} />
+            <Route path="404" element={<NotFound />} />
+            <Route path="*" element={<Navigate to="/404" />} />
+          </Routes>
+          </CSSTransition>
+      </TransitionGroup>
+          <Footer />
         </ErrorHandler>
       </Router>
     </body>
@@ -68,3 +87,4 @@ const App = () => {
 };
 
 export default App;
+

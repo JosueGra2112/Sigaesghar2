@@ -68,6 +68,13 @@
 }
 /* Login.css */
 
+.nav-linkLog:hover {
+  transform: scale(1.1); /* Escala el tamaño del enlace al 110% */
+  transition: transform 0.3s ease; /* Suaviza la transición */
+  
+}
+
+
 .login-container {
   display: flex;
   align-items: center;

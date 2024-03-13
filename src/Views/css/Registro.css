@@ -121,3 +121,38 @@
     flex-basis: calc(50% - 10px); /* Cambia a dos columnas en dispositivos más pequeños */
   }
 }
+
+.input-group.terminos {
+  display: flex;
+  align-items: center;
+}
+
+.terminos-container {
+  display: flex;
+  align-items: center;
+  margin-right: 200px; /* Ajusta el margen derecho para controlar la separación */
+  
+}
+
+.terminos-container input[type="radio"] {
+  margin: 0; /* Elimina todos los márgenes del radio button */
+}
+
+.politicas-link {
+  text-decoration: none;
+  color: #3498db; /* Cambia el color del enlace según sea necesario */
+  font-size: 14px; /* Ajusta el tamaño del texto según sea necesario */
+  text-align: center; /* Alinea el texto al centro si es necesario */
+}
+
+.terminos-container .acepto-text {
+  margin-right: 5px; /* Ajusta el margen derecho para separar el radio button del texto */
+  font-size: 14px; /* Ajusta el tamaño de la fuente del texto según sea necesario */
+}
+
+.terminos-container .politicas-link {
+  text-decoration: none;
+  color: #3498db; /* Cambia el color del enlace según sea necesario */
+  font-size: 14px; /* Ajusta el tamaño del texto según sea necesario */
+  text-align: center; /* Alinea el texto al centro si es necesario */
+}

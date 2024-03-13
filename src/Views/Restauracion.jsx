@@ -1,10 +1,8 @@
-// src/Restauracion.jsx
 import React, { useState, useEffect } from 'react';
-
 import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header';
-
-import './css/Restauracion.css'; // Asegúrate de crear este archivo CSS para los estilos de la restauración
+import './css/alerts.css'
+import './css/Restauracion.css';
 
 const Restauracion = () => {
   const [usuario, setUsuario] = useState('');
@@ -12,14 +10,16 @@ const Restauracion = () => {
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
   const [preguntaSecreta, setPreguntaSecreta] = useState('');
   const [respuestaSecreta, setRespuestaSecreta] = useState('');
-  const [preguntasSecretas, setPreguntasSecretas] = useState([]); // Agrega este estado
-  const navigate = useNavigate();
+  const [preguntasSecretas, setPreguntasSecretas] = useState([]);
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
-  
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const navigate = useNavigate();
+
   
   useEffect(() => {
     console.log('Obteniendo preguntas secretas...');
-    fetch('http://localhost:3001/PreguntasSecretas')
+    fetch('http://localhost/WebServices/preguntas.php')
       .then(response => response.json())
       .then(data => {
         if (data.success) {
@@ -35,20 +35,19 @@ const Restauracion = () => {
   }, []);
 
   const handleRestauracion = () => {
-    // Verificar que todos los campos estén completos
     if (!usuario || !contrasenaNueva || !confirmarContrasena || !preguntaSecreta || !respuestaSecreta) {
-      alert('Todos los campos son obligatorios');
+      setAlertMessage('Todos los campos son obligatorios');
+      setShowAlert(true);
       return;
     }
 
-    // Validar que las contraseñas coincidan
     if (contrasenaNueva !== confirmarContrasena) {
-      alert('Las contraseñas no coinciden');
+      setAlertMessage('Las contraseñas no coinciden');
+      setShowAlert(true);
       return;
     }
 
-    // Realizar solicitud al servidor para verificar la respuesta secreta
-    fetch('http://localhost:3001/VerificarRespuestaSecreta', {
+    fetch('http://localhost/WebServices/VerificarRespuestaSecreta.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,9 +57,7 @@ const Restauracion = () => {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          // Respuesta secreta correcta, proceder con la actualización de la contraseña
-          // Realizar solicitud al servidor para actualizar la contraseña
-          fetch('http://localhost:3001/ActualizarContrasena', {
+          fetch('http://localhost/WebServices/ActualizarContrasena.php', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -70,67 +67,68 @@ const Restauracion = () => {
             .then(response => response.json())
             .then(data => {
               if (data.success) {
-                // Contraseña actualizada con éxito
+                setAlertMessage('La contraseña se ha actualizado correctamente');
+                setShowAlert(true);
                 alert('La contraseña se ha actualizado correctamente');
                 navigate(`/Login`);
               } else {
-                // Error al actualizar la contraseña
-                alert('Error al actualizar la contraseña');
+                setAlertMessage('Error al actualizar la contraseña');
+                setShowAlert(true);
               }
             })
             .catch(error => {
               console.error('Error al actualizar la contraseña:', error);
-              alert('Error al actualizar la contraseña');
+              setAlertMessage('Error al actualizar la contraseña');
+              setShowAlert(true);
             });
         } else {
-          // Respuesta secreta incorrecta
-          alert('Lo siento, no ha respondido correctamente a la pregunta secreta');
+          setAlertMessage('Lo siento, no ha respondido correctamente a la pregunta secreta');
+          setShowAlert(true);
         }
       })
       .catch(error => {
         console.error('Error al verificar respuesta secreta:', error);
-        alert('Error al verificar respuesta secreta');
+        setAlertMessage('Error al verificar respuesta secreta');
+        setShowAlert(true);
       });
   };
 
   return (
-  
     <div>
-        <Header />
-        <div className="registro-container">
+      <Header />
+      <div className="registro-container">
+        <div className="registro-box">
+          <h2>Restauración de Contraseña</h2>
+          <form>
+            <div className="input-group">
+              <label htmlFor="usuario">Usuario</label>
+              <input type="text" id="usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} />
+            </div>
 
-        
-        <br />
-        <br />
-      <div className="registro-box">
-        <h2>Restauración de Contraseña</h2>
-        <br />
-        <form>
-          <div className="input-group">
-            <label htmlFor="usuario">Usuario</label>
-            <input type="text" id="usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} />
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="contrasenaNueva">Contraseña Nueva</label>
-            <div className="password-input">
+            <div className="input-group">
+              <label htmlFor="contrasenaNueva">Contraseña Nueva</label>
+              <div className="password-input">
                 <input
                   type={mostrarContrasena ? "text" : "password"}
                   id="contrasenaNueva"
                   value={contrasenaNueva}
                   onChange={(e) => setContrasenaNueva(e.target.value)}
                 />
-
+                <button
+                  type="button"
+                  onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                >
+                  {mostrarContrasena ? 'Ocultar' : 'Mostrar'}
+                </button>
               </div>
-          </div>
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="confirmarContrasena">Confirmar Contraseña</label>
-            
-            <div className="password-input">
+            <div className="input-group">
+              <label htmlFor="confirmarContrasena">Confirmar Contraseña</label>
+              <div className="password-input">
                 <input
                   type={mostrarContrasena ? "text" : "password"}
-                  id="contrasenaNueva"
+                  id="confirmarContrasena"
                   value={confirmarContrasena}
                   onChange={(e) => setConfirmarContrasena(e.target.value)}
                 />
@@ -138,40 +136,63 @@ const Restauracion = () => {
                   type="button"
                   onClick={() => setMostrarContrasena(!mostrarContrasena)}
                 >
-                  Mostrar
+                  {mostrarContrasena ? 'Ocultar' : 'Mostrar'}
                 </button>
               </div>
-          </div>
+            </div>
 
-          <div className="input-group">
-  <label htmlFor="preguntaSecreta">Seleccione su Pregunta Secreta</label>
-  <select id="preguntaSecreta" value={preguntaSecreta} onChange={(e) => setPreguntaSecreta(e.target.value)}>
-    <option value="">Seleccione una pregunta</option>
-    {preguntasSecretas.map((pregunta, index) => (
-      <option key={index} value={pregunta}>{pregunta}</option>
-    ))}
-  </select>
-</div>
+            <div className="input-group">
+              <label htmlFor="preguntaSecreta">Seleccione su Pregunta Secreta</label>
+            
+            
+              <select
+  id="preguntaSecreta"
+  value={preguntaSecreta}
+  onChange={(e) => setPreguntaSecreta(e.target.value)}
+>
+  <option value="">Seleccione una pregunta</option>
+  {preguntasSecretas.map((pregunta) => (
+    <option key={pregunta.idpregunta} value={pregunta.idpregunta}>
+      {pregunta.pregunta}
+    </option>
+  ))}
+</select>
 
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="respuestaSecreta">Respuesta Secreta</label>
-            <input type="text" id="respuestaSecreta" value={respuestaSecreta} onChange={(e) => setRespuestaSecreta(e.target.value)} />
-          </div>
+            <div className="input-group">
+              <label htmlFor="respuestaSecreta">Respuesta Secreta</label>
+              <input type="text" id="respuestaSecreta" value={respuestaSecreta} onChange={(e) => setRespuestaSecreta(e.target.value)} />
+            </div>
 
-          <button type="button" className="restauracion-button" onClick={handleRestauracion}>
-            Cambiar Contraseña
-          </button>
-        </form>
+            <button type="button" className="restauracion-button" onClick={handleRestauracion}>
+              Cambiar Contraseña
+            </button>
+          </form>
+<p className="login-link">Cambiar contraseña con correo electronico</p>
+<p className="login-link"><Link to="/Rest">Recuperar</Link></p>
 
-        <p className="login-link">¿Recuerdas tu contraseña? <Link to="/Login">Inicia Sesión</Link></p>
-        <br />
-        <div className="espacio-aviso"></div>
+          <p className="login-link">¿Recuerdas tu contraseña? 
+          <Link to="/Login"
+            className="nav-linkLog"
+            style={{ transition: 'text-shadow 0.3s ease' }}
+            onMouseEnter={(e) => e.target.style.textShadow = '0 0 10px rgba(0, 0, 0, 0.9)'}
+            onMouseLeave={(e) => e.target.style.textShadow = 'none'}
+          > Inicia Sesión</Link></p>
         </div>
       </div>
+
+      {showAlert && (
+        <div className="alert-overlay">
+          <div className="alert-container">
+            <div className="alert-content">
+              <span className="close-button" onClick={() => setShowAlert(false)}>&times;</span>
+              <p>{alertMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-    
-    
   );
 };
 

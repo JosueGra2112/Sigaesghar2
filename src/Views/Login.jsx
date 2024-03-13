@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './css/Login.css';
+import './css/alerts.css'
 import Loginim from '../IMG/Login.png';
 import Header from './Header';
 
@@ -14,6 +15,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -23,13 +26,8 @@ const Login = () => {
   }, [location.search]);
 
   const showNotification = (message, type = 'error') => {
-    if ('Notification' in window) {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          new Notification(type === 'error' ? 'Error' : 'Mensaje', { body: message });
-        }
-      });
-    }
+    setAlertMessage(message);
+    setShowAlert(true);
   };
 
   const handleLogin = () => {
@@ -42,7 +40,7 @@ const Login = () => {
     setFormError(null);
     setErrorLogin(false);
 
-    fetch('http://localhost:3001/Login', {
+    fetch('http://localhost/WebServices/logeo.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -57,18 +55,25 @@ const Login = () => {
           } else if (cargo === 'Administrativo') {
             navigate('/sesionAd');
           } else {
-            setErrorLogin(true);
-            showNotification('Error de autenticación. Por favor, verifica tus credenciales.');
+            setErrorLogin(false); // Limpiamos el estado de errorLogin
+            showNotification('Autenticación exitosa');
           }
         } else {
           setErrorLogin(true);
-          showNotification('Error de autenticación. Por favor, verifica tus credenciales.');
+          if (data.message === 'Su cuenta aún no está activada. Por favor, póngase en contacto con el administrador para activar su cuenta.') {
+            // Mostrar mensaje específico para cuenta no activada
+            showNotification('Su cuenta aún no está activada. Por favor, póngase en contacto con el administrador para activar su cuenta.');
+          } else {
+            // Mostrar mensaje genérico de error de autenticación
+            showNotification('Error de autenticación. Por favor, verifica tus credenciales.');
+          }
         }
       })
       .catch(error => {
         console.error('Error al realizar la solicitud de autenticación:', error);
         showNotification('Error al realizar la solicitud de autenticación.');
       });
+    
   };
 
   return (
@@ -130,8 +135,8 @@ const Login = () => {
               </div>
             </div>
 
-            {formError && <p className="error-message">{formError}</p>}
-            {errorLogin && <p className="error-message">Error de autenticación. Por favor, verifica tus credenciales.</p>}
+            {formError && <p className="error-message"></p>}
+            {errorLogin && <p className="error-message"></p>}
 
             <button type="button" className="login-button" onClick={handleLogin}>
               Acceder
@@ -139,15 +144,41 @@ const Login = () => {
           </form>
 
           <p className="register-link">¿No tienes cuenta?</p>
-          <Link to="/Registro" className="nav-linkLog">
-            Registrarse
-          </Link>
+          <Link 
+  to="/Registro" 
+  className="nav-linkLog"
+  style={{ transition: 'text-shadow 0.3s ease' }}
+  onMouseEnter={(e) => e.target.style.textShadow = '0 0 10px rgba(0, 0, 0, 0.9)'}
+  onMouseLeave={(e) => e.target.style.textShadow = 'none'}
+>
+  Registrarse
+</Link>
+
           <p className="register-link">¿Olvidaste tu contraseña?</p>
-          <Link to="/Restauracion" className="nav-linkLog">
-            Restaurar
-          </Link>
+          <Link 
+  to="/Restauracion" 
+  className="nav-linkLog"
+  style={{ transition: 'text-shadow 0.3s ease' }}
+  onMouseEnter={(e) => e.target.style.textShadow = '0 0 10px rgba(0, 0, 0, 0.5)'}
+  onMouseLeave={(e) => e.target.style.textShadow = 'none'}
+>
+  Restaurar
+</Link>
+
+
+
         </div>
       </div>
+      {showAlert && (
+        <div className="alert-overlay">
+          <div className="alert-container">
+            <div className="alert-content">
+              <span className="close-button" onClick={() => setShowAlert(false)}>&times;</span>
+              <p>{alertMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

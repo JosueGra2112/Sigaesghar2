@@ -1,0 +1,10 @@
+.progress-bar-container {
+    width: 100%;
+    background-color: rgba(240, 240, 240, 0);
+    height: 20px;
+  }
+  .progress-bar {
+    height: 40%;
+    background-color: #007bff; /* Cambia el color de la barra de progreso según tu diseño */
+    
+  }

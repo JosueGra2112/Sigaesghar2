@@ -1,0 +1,8 @@
+.app-container {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.app-container[aria-hidden="true"] {
+  opacity: 0;
+}

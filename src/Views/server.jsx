@@ -14,6 +14,7 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
+
 app.use(cors(corsOptions));
 
 // Configura la conexión a la base de datos
@@ -49,75 +50,49 @@ app.get('/testdb', (req, res) => {
 
 
 
-// ... (tu código anterior)
-
-// ... (tu código anterior)
-
-// Función de ejemplo para la lógica de registro (reemplazar con tu propia lógica)
 function registrarUsuario(userData, res) {
-  const { nombre, apellidoPaterno, apellidoMaterno, cargo, telefono, correo, user, contrasena, preguntaSecreta, respuestaSecreta } = userData;
+  const { nombre, apellidoPaterno, apellidoMaterno, cargo, telefono, correo, user, contrasena, preguntaSecreta, respuestaSecreta, aceptoPoliticas } = userData;
 
-  // Validar si el usuario ya existe
-  const verificarUsuarioExistente = 'SELECT * FROM tbluser WHERE user = ?';
-  db.query(verificarUsuarioExistente, [user], (errorUser, resultsUser) => {
-    if (errorUser) {
-      console.error('Error al verificar usuario existente:', errorUser);
-      res.status(500).json({ field: 'user', message: 'Error al verificar usuario existente' });
+  // Verificar si se aceptaron las políticas
+  if (aceptoPoliticas !== "ACEPTO") {
+    res.status(400).json({ message: 'Debes aceptar las políticas del sitio web para registrarte' });
+    return;
+  }
+
+  // Obtener el ID de la pregunta secreta seleccionada
+  const obtenerIdPregunta = 'SELECT idPregunta FROM tblpreguntas WHERE idPregunta = ?'; // Cambiar 'pregunta' por 'idPregunta'
+  db.query(obtenerIdPregunta, [preguntaSecreta], (errorPregunta, resultsPregunta) => {
+    if (errorPregunta) {
+      console.error('Error al obtener ID de pregunta secreta:', errorPregunta);
+      res.status(500).json({ message: 'Error al obtener ID de pregunta secreta' });
       return;
     }
 
-    if (resultsUser.length > 0) {
-      // Usuario ya existe
-      res.status(400).json({ field: 'user', message: 'Este usuario ya está registrado' });
+    if (resultsPregunta.length === 0) {
+      // La pregunta secreta seleccionada no existe en la base de datos
+      res.status(400).json({ field: 'preguntaSecreta', message: 'La pregunta secreta seleccionada no es válida' });
     } else {
-      // Validar si el número de teléfono ya existe
-      const verificarTelefonoExistente = 'SELECT * FROM tbluser WHERE telefono = ?';
-      db.query(verificarTelefonoExistente, [telefono], (errorTelefono, resultsTelefono) => {
-        if (errorTelefono) {
-          console.error('Error al verificar teléfono existente:', errorTelefono);
-          res.status(500).json({ field: 'telefono', message: 'Error al verificar teléfono existente' });
-          return;
-        }
+      const idPregunta = resultsPregunta[0].idPregunta;
 
-        if (resultsTelefono.length > 0) {
-          // Teléfono ya existe
-          res.status(400).json({ field: 'telefono', message: 'Este número de teléfono ya está registrado' });
+      // Validar si el usuario ya existe, verificar teléfono y correo
+
+      // Registra el nuevo usuario
+      const sql = 'INSERT INTO tbluser (nombre, ap_paterno, ap_materno, cargo, telefono, email, user, pass, idPre, respuesta, politicas, act) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)';
+      db.query(sql, [nombre, apellidoPaterno, apellidoMaterno, cargo, telefono, correo, user, contrasena, idPregunta, respuestaSecreta, aceptoPoliticas], (err, result) => {
+        if (err) {
+          console.error('Error al realizar el registro:', err);
+          res.status(500).json({ message: 'Error al realizar el registro' });
         } else {
-          // Validar si el correo electrónico ya existe
-          const verificarCorreoExistente = 'SELECT * FROM tbluser WHERE email = ?';
-          db.query(verificarCorreoExistente, [correo], (errorCorreo, resultsCorreo) => {
-            if (errorCorreo) {
-              console.error('Error al verificar correo existente:', errorCorreo);
-              res.status(500).json({ field: 'correo', message: 'Error al verificar correo existente' });
-              return;
-            }
-
-            if (resultsCorreo.length > 0) {
-              // Correo electrónico ya existe
-              res.status(400).json({ field: 'correo', message: 'Este correo electrónico ya está registrado' });
-            } else {
-              // Lógica de registro en la base de datos (reemplazar con tu propia lógica)
-              const sql = 'INSERT INTO tbluser (nombre, ap_paterno, ap_materno, cargo, telefono, email, user, pass, pregunta, respuesta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            
-              db.query(sql, [nombre, apellidoPaterno, apellidoMaterno, cargo, telefono, correo, user, contrasena, preguntaSecreta, respuestaSecreta], (err, result) => {
-                if (err) {
-                  console.error('Error al realizar el registro:', err);
-                  res.status(500).json({ message: 'Error al realizar el registro' });
-                } else {
-                  console.log('Registro exitoso:', result);
-                  res.status(200).json({ message: 'Registro exitoso' });
-                }
-              });
-            }
-          });
+          console.log('Registro exitoso:', result);
+          res.status(200).json({ message: 'Registro exitoso' });
         }
       });
     }
   });
 }
 
-// ... (tu código posterior)
 
+// Ruta para el registro de usuarios
 app.post('/Registro', (req, res) => {
   console.log('Cuerpo de la solicitud:', req.body);
   try {
@@ -131,23 +106,13 @@ app.post('/Registro', (req, res) => {
 });
 
 
-// Ruta para la autenticación
+
 app.post('/Login', (req, res) => {
   const { cargo, username, password } = req.body;
 
-  console.log('Cargo:', cargo);
-  console.log('Username:', username);
-  console.log('Password:', password);
-
   // Lógica de autenticación (reemplazar con tu propia lógica)
   const sql = 'SELECT * FROM tbluser WHERE cargo = ? AND user = ? AND pass = ?';
-
-  // Verifica que los datos lleguen correctamente
-  console.log('Cargo:', cargo);
-  console.log('Username:', username);
-  console.log('Password:', password);
-
-  // Agrega un manejo adecuado de errores en la consulta SQL
+  
   db.query(sql, [cargo, username, password], (err, results) => {
     if (err) {
       console.error('Error en la consulta SQL:', err);
@@ -155,14 +120,24 @@ app.post('/Login', (req, res) => {
     }
 
     if (results.length > 0) {
-      // Autenticación exitosa
-      res.status(200).json({ success: true, message: 'Autenticación exitosa' });
+      const user = results[0];
+      if (user.act === 0) {
+        return res.status(401).json({ success: false, message: 'Su cuenta aún no está activada. Por favor, póngase en contacto con el administrador para activar su cuenta.' });
+      } else {
+        // Autenticación exitosa
+        return res.status(200).json({ success: true, message: 'Autenticación exitosa' });
+      }
     } else {
       // Autenticación fallida
-      res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
+      return res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
     }
   });
 });
+
+
+
+
+
 
 
 app.get('/expedientes', (req, res) => {
@@ -179,12 +154,15 @@ app.get('/expedientes', (req, res) => {
 
 // ... (código anterior)
 
+
+
+
 // Ruta para verificar la respuesta secreta
 app.post('/VerificarRespuestaSecreta', (req, res) => {
   const { usuario, preguntaSecreta, respuestaSecreta } = req.body;
 
   // Lógica para verificar la respuesta secreta en la base de datos
-  const sql = 'SELECT * FROM tbluser WHERE user = ? AND pregunta = ? AND respuesta = ?';
+  const sql = 'SELECT * FROM tbluser WHERE user = ? AND idPre = ? AND respuesta = ?';
 
   db.query(sql, [usuario, preguntaSecreta, respuestaSecreta], (err, results) => {
     if (err) {
@@ -201,6 +179,10 @@ app.post('/VerificarRespuestaSecreta', (req, res) => {
     }
   });
 });
+
+
+
+
 
 
 // ... (código anterior)
@@ -228,22 +210,29 @@ app.post('/ActualizarContrasena', (req, res) => {
   });
 });
 
+
+
+
 app.get('/PreguntasSecretas', (req, res) => {
-  // Realiza una consulta simple para obtener las preguntas secretas
-  db.query('SELECT DISTINCT pregunta FROM tbluser', (err, results) => {
+  // Realiza una consulta simple para obtener las preguntas secretas de la tabla tblpreguntas
+  db.query('SELECT `idpregunta`, pregunta FROM tblpreguntas', (err, results) => {
     if (err) {
       console.error('Error al obtener preguntas secretas:', err);
       res.status(500).json({ success: false, message: 'Error al obtener preguntas secretas' });
     } else {
-      const preguntas = results.map(result => result.pregunta);
-      res.json({ success: true, preguntas });
+      res.json({ success: true, preguntas: results });
     }
   });
 });
 
 
 
+
+
+
+
 // Escucha en el puerto especificado
+
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
